@@ -510,17 +510,19 @@ class Machine:
     def _next_newline_closed_block_from_shell(self) -> str:
         assert self.shell
         output_buffer = []
+        debug_buffer = []
         while True:
             # This receives up to 4096 bytes from the socket
             chunk = self.shell.recv(4096)
             if not chunk:
                 # Probably a broken pipe, return the output we have
                 break
-
             decoded = chunk.decode()
             output_buffer += [decoded]
+            debug_buffer += [decoded]
             if decoded[-1] == "\n":
                 break
+        print(debug_buffer)
         return "".join(output_buffer)
 
     def execute(
